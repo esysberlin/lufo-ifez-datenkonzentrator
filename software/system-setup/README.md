@@ -64,3 +64,13 @@ network={
 $ sudo systemctl enable ssh
 $ sudo systemctl start ssh
 ```
+
+## Enable the SPI driver
+
+In `/boot/config.txt` uncomment
+
+```
+dtparam=spi=on
+```
+
+and reboot.
