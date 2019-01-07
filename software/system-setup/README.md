@@ -74,3 +74,13 @@ dtparam=spi=on
 ```
 
 and reboot.
+
+## Install python-periphery
+
+[python-periphery](https://github.com/vsergeev/python-periphery) is a library for GPIO and SPI
+communication. Install it with:
+
+```bash
+$ sudo apt-get install python3-pip
+$ sudo pip3 install python-periphery==1.1.1
+```
