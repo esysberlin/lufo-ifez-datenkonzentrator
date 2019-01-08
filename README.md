@@ -9,6 +9,6 @@ The Datenkonzentrator is made of:
 This repository shows:
 
 * [how to setup the operating system](software/system-setup/) on the Raspberry Pi, and
-* [python examples](software/examples/) querying the sensor data via
+* [examples](software/examples/) querying the sensor data via
   [SPI](https://en.wikipedia.org/wiki/Serial_Peripheral_Interface) and publishing them as
   [MQTT](https://en.wikipedia.org/wiki/MQTT) messages.

@@ -1,6 +1,7 @@
 # System Setup
 
-This document describes how to install Linux and various libraries on the Raspberry Pi's SD-card.
+This document describes how to install Linux on the Raspberry Pi's SD-card and how to set it up for
+running the [examples](../examples/).
 
 ## Copy the raspbian image to an SD-card
 
@@ -86,27 +87,3 @@ sudo usermod -aG gpio pi
 ```
 
 Close your SSH session and re-open it.
-
-## Install dependencies
-
-Our [examples](../examples/) require the following dependencies.
-
-### python-periphery
-
-[python-periphery](https://github.com/vsergeev/python-periphery) is a library for GPIO and SPI
-communication. Install it with:
-
-```bash
-$ sudo apt-get install python3-pip
-$ sudo pip3 install python-periphery==1.1.1
-```
-
-### The MQTT Python library
-
-The
-[MQTT Python library](https://thingsboard.io/docs/samples/raspberry/gpio/#mqtt-library-installation)
-is for sending data to a service like [ThingsBoard](https://thingsboard.io/). Install it with:
-
-```bash
-$ sudo pip3 install paho-mqtt==1.4.0
-```

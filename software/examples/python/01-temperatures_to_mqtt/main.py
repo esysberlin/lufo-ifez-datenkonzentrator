@@ -74,8 +74,8 @@ _MQTT_SETTINGS = {
 }
 
 def _spi_query(slave_name, command):
-  """Selects the given SPI slave, sends it the SPI command `command_str` and returns the received
-  response as a stripped string.
+  """Selects the given SPI slave, sends it the SPI command and returns the received response as a
+  stripped string.
   @param slave_name: _KNOWN_SPI_SLAVES key.
   @param command: _KNOWN_SPI_SLAVES[slave_name]['commands'] key.
   """
