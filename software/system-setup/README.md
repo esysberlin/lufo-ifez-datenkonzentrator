@@ -79,6 +79,14 @@ dtparam=spi=on
 
 and reboot.
 
+## Allow user to perform GPIO operations
+
+```bash
+sudo usermod -aG gpio pi
+```
+
+Close your SSH session and re-open it.
+
 ## Install dependencies
 
 Our [examples](../examples/) require the following dependencies.

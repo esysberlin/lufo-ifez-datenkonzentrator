@@ -17,7 +17,7 @@ $ scp -r 01* pi@${DEVICE_IP}:/home/pi/
 $ ssh pi@${DEVICE_IP}
 password: raspberry
 $ cd 01*
-$ sudo ./main.py aBcDeFgHiJkLmNoPqRsT
+$ ./main.py aBcDeFgHiJkLmNoPqRsT
 Sending {
   "temperature00": "21.02",
   "temperature01": "22.45",
