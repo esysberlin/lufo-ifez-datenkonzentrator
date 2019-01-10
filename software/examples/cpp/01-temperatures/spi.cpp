@@ -16,11 +16,14 @@ static const auto SPI_DEV = "/dev/spidev0.0";
 static const auto SPI_MODE = SPI_MODE_1;
 static const auto SPI_FREQ_HZ = 3000000;
 
-static const std::map<
-  Spi::KnownCommand,
-  std::pair<const char*/*command*/, size_t/*longest response*/> > KNOWN_SPI_COMMANDS =
+// Needs to be long enough so the slave has time to answer:
+static const auto SPI_COMMAND_LENGTH = 160;
+
+static const auto SPI_MESSAGE_SEPARATOR = '\r';
+
+static const std::map<Spi::KnownCommand, std::string> KNOWN_SPI_COMMANDS =
 {
-  { Spi::CMD_THERMO_ELEMENTS_GET_TEMPERATURES, { "GT\r", 160 } },
+  { Spi::CMD_THERMO_ELEMENTS_GET_TEMPERATURES, "GT" },
 };
 
 std::string Spi::query(Spi::KnownSlave slave, Spi::KnownCommand command)
@@ -48,16 +51,17 @@ std::string Spi::query(Spi::KnownSlave slave, Spi::KnownCommand command)
     return "";
   }
 
-  const auto length = KNOWN_SPI_COMMANDS.at(command).second;
-  const auto commandStr = new char[length];
-  std::strcpy(commandStr, KNOWN_SPI_COMMANDS.at(command).first);
+  char commandStr[SPI_COMMAND_LENGTH];
+  std::memset(commandStr, 0, SPI_COMMAND_LENGTH);
+  std::strcpy(commandStr, (KNOWN_SPI_COMMANDS.at(command) + SPI_MESSAGE_SEPARATOR).c_str());
 
-  const auto response = new char[length];
+  char response[SPI_COMMAND_LENGTH];
+  std::memset(response, 0, SPI_COMMAND_LENGTH);
 
   spi_ioc_transfer descriptor = {};
   descriptor.tx_buf = reinterpret_cast<unsigned long>(commandStr);
   descriptor.rx_buf = reinterpret_cast<unsigned long>(response);
-  descriptor.len = length;
+  descriptor.len = SPI_COMMAND_LENGTH;
   descriptor.speed_hz = SPI_FREQ_HZ;
   descriptor.bits_per_word = 8;
 
@@ -68,20 +72,20 @@ std::string Spi::query(Spi::KnownSlave slave, Spi::KnownCommand command)
     return "";
   }
 
-  delete [] commandStr;
   close(fd);
 
   std::string printableChars;
-  for (size_t i = 0; i < length; ++i)
+  for (size_t i = 0; i < SPI_COMMAND_LENGTH; ++i)
   {
     auto character = response[i];
+    if (character == SPI_MESSAGE_SEPARATOR) {
+      break;
+    }
     if (character >= 0x20 && character < 0x7f)
     {
       printableChars += character;
     }
   }
-
-  delete [] response;
 
   return printableChars;
 }
