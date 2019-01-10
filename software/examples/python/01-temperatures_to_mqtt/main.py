@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import errno
 import json
 import socket
 import sys
 import time
 
 import paho.mqtt.client as mqtt
-from periphery import GPIO, SPI
+from periphery import GPIO, GPIOError, SPI
 
 def main(argv):
   if not len(argv) == 2:
@@ -96,7 +97,15 @@ def _select_spi_slave(name):
   @param name: _KNOWN_SPI_SLAVES key.
   """
   for pin, output_value in _KNOWN_SPI_SLAVES[name]['gpio'].items():
-    gpio_out = GPIO(pin, 'out')
+    for attempt in [1, 0]:
+      try:
+        gpio_out = GPIO(pin, 'out')
+      except GPIOError as e:
+        if not attempt or e.errno != errno.EACCES:
+          raise
+        print('Warning, opening GPIO pin failed, retrying...')
+        time.sleep(.5)
+
     gpio_out.write(output_value)
     gpio_out.close()
 
