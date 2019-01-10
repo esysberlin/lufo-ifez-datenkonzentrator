@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import binascii
 import errno
 import json
 import socket
@@ -119,8 +120,18 @@ def _parse_spi_response(response):
 
   @param response: Stripped string. Typically the output of _spi_query().
   """
-  response_without_crc = response.split('*')[0]
+  response_without_crc, crc = response.split('*')
+  _check_crc(response_without_crc, crc)
   return response_without_crc.split(',')[2:]
+
+def _check_crc(string, crc):
+  """Raises if `crc` isn't the CRC-16/CCITT-FALSE of `string`.
+  @param crc: received CRC as string, e.g. 'A1B2'.
+  """
+  string_crc_int = binascii.crc_hqx(bytes(string, 'utf-8'), 0xffff)
+  crc_int = int(crc, 16)
+  if string_crc_int != crc_int:
+    raise RuntimeError("Message '{}' received together with wrong CRC '{}'.".format(string, crc))
 
 def _list_to_mqtt_values(values, prefix, num_digits):
   """Transforms a values=['a', 'b', 'c'], prefix='myval', num_digits=4 into a dict
