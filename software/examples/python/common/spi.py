@@ -67,6 +67,9 @@ _KNOWN_SPI_SLAVES = {
       21: False,
     },
     'commands': { # known SPI commands
+      'get_analog': 'GA',
+      'set_digital': 'SD',
+      'get_digital': 'GD',
     },
   },
   'thermo_elements': {
@@ -106,7 +109,7 @@ _SPI_BUS_SETTINGS = {
   'freq_hz': 3000000,
 }
 
-_SPI_COMMAND_LENGTH = 200 # Needs to be long enough so the slave has time to answer
+_SPI_COMMAND_LENGTH = 400 # Needs to be long enough so the slave has time to answer
 _SPI_MESSAGE_SEPARATOR = b'\r'
 
 _SPI_RESPONSE_CODES = {
