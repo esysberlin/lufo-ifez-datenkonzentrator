@@ -84,6 +84,8 @@ _KNOWN_SPI_SLAVES = {
       21: True,
     },
     'commands': { # known SPI commands
+      'get_outputs': 'GO',
+      'set_outputs': 'SO',
     },
   },
   'relays': {
