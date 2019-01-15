@@ -1,14 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import json
 import socket
 import sys
 import time
 
-import paho.mqtt.client as mqtt
-
-from common import spi
+from common import mqtt, spi
 
 def main(argv):
   if not len(argv) == 2:
@@ -21,13 +18,8 @@ def main(argv):
     time.sleep(1)
     temperatures = spi.parse_response(spi.query('thermo_elements', 'get_temperatures'))
     mqtt_values = _list_to_mqtt_values(temperatures, 'temperature', 2)
-    _send_mqtt_telemetry(mqtt_values, mqtt_token)
+    mqtt.send_telemetry(socket.gethostname(), mqtt_values, mqtt_token)
 
-
-_MQTT_SETTINGS = {
-  'host': 'data.esys.eu',
-  'port': 1883,
-}
 
 def _list_to_mqtt_values(values, prefix, num_digits):
   """Transforms a values=['a', 'b', 'c'], prefix='myval', num_digits=4 into a dict
@@ -41,38 +33,6 @@ def _list_to_mqtt_values(values, prefix, num_digits):
   """
   return dict(('temperature{index:0>{width}}'.format(index=i, width=num_digits), values[i])
               for i in range(len(values)))
-
-def _send_mqtt_telemetry(mqtt_values, mqtt_token):
-  """@param mqtt_values: values dict. Typically the output of _list_to_mqtt_values().
-  """
-  print('Sending {} over MQTT...'.format(json.dumps(mqtt_values, sort_keys=True, indent=2)))
-
-  def on_connect(client, userdata, flags, result_code):
-    if result_code != mqtt.MQTT_ERR_SUCCESS:
-      print('ERROR: Connection returned {}.'.format(result_code))
-    else:
-      to_be_sent = {
-        socket.gethostname(): [{
-          'ts': int(time.time() * 1000),
-          'values': mqtt_values,
-        }],
-      }
-      result_code = client.publish('v1/gateway/telemetry', json.dumps(to_be_sent)).rc
-      if result_code != mqtt.MQTT_ERR_SUCCESS:
-        print('ERROR: MQTT publish returned {}.'.format(result_code))
-
-    client.disconnect()
-
-  client = mqtt.Client()
-  client.on_connect = on_connect
-  client.username_pw_set(mqtt_token)
-  client.connect(
-    _MQTT_SETTINGS['host'], _MQTT_SETTINGS['port'],
-    60 # see https://thingsboard.io/docs/samples/raspberry/gpio/#application-source-code
-  )
-  client.loop_forever() # will stop on client.disconnect()
-
-  print('')
 
 
 if __name__ == '__main__':
