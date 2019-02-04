@@ -1,3 +1,9 @@
+[<img src="https://avatars3.githubusercontent.com/u/33929559?s=200&v=4" align="left" width="64" height="64">](https://www.esys.eu/)
+
+Made in Berlin by [ESYS](https://www.esys.eu/).
+
+<br />
+
 # lufo-ifez-datenkonzentrator
 
 The Datenkonzentrator is made of:
