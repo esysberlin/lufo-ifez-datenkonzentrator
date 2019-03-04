@@ -153,4 +153,4 @@ def _crc(string):
 def int_to_hex_string(integer):
   """Converts e.g. 255 to 'FF'.
   """
-  return hex(integer)[2:].upper()
+  return hex(integer)[2:].upper().zfill(4)
