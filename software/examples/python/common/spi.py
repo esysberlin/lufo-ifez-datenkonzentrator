@@ -151,6 +151,6 @@ def _crc(string):
   return binascii.crc_hqx(bytes(string, 'utf-8'), 0xffff)
 
 def int_to_hex_string(integer):
-  """Converts e.g. 255 to 'FF'.
+  """Converts an integer to an hex string with at least a length of 4, e.g. 255 to '00FF'.
   """
   return hex(integer)[2:].upper().zfill(4)
