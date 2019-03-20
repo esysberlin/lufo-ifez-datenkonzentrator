@@ -31,8 +31,10 @@ def _list_to_mqtt_values(values, prefix, num_digits):
   so it can be sent as telemetry over MQTT, see
   https://thingsboard.io/docs/reference/gateway-mqtt-api/#telemetry-upload-api
   """
-  return dict(('temperature{index:0>{width}}'.format(index=i, width=num_digits), values[i])
-              for i in range(len(values)))
+  return dict(
+    ('{prefix}{index:0>{width}}'.format(prefix=prefix, index=i, width=num_digits), values[i])
+    for i in range(len(values))
+  )
 
 
 if __name__ == '__main__':
