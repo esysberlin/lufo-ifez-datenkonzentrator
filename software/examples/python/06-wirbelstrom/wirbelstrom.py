@@ -1,7 +1,6 @@
-
 # !/usr/bin/python3
 #
-# Start Measure mit TX -> "A", wait 1s , dann RX 8 Byte vom Sensor, Sio Timeout 10s wenn no Antwort !
+# Start Measure mit TX -> "A", wait 2s , dann RX 8 Byte vom Sensor, Sio Timeout 10s wenn no Antwort !
 # 1 x Sensor abfragen, ret -> Messwerte oder Fehlermeldung.
 
 import time, math
@@ -12,7 +11,7 @@ GPIO.setmode(GPIO.BCM)
 
 RE = 23
 DE = 24
-#port = "/dev/ttyS0"    
+#port = "/dev/ttyS0"    # Raspberry Pi 3
 port = "/dev/ttyAMA0"
 
 if __name__ == "__main__":
@@ -37,15 +36,17 @@ if __name__ == "__main__":
   # RS 485 auf TX schalten
   GPIO.output(DE, GPIO.HIGH)
   GPIO.output(RE, GPIO.HIGH)
+  ser.write(b'A')  # leitung freipusten !! :-)
   ser.write(b'A')
   ser.flushOutput()
   # RS 485 auf RX schalten
   GPIO.output(RE, GPIO.LOW)
   GPIO.output(DE, GPIO.LOW)
-  time.sleep(5) # Wie schnell antwortet der Sensor ????
+  ser.flushInput()
+  time.sleep(2) # Wie schnell antwortet der Sensor ????
 
   rx_anz = ser.inWaiting()
-  if rx_anz > 7: # 8 byte rx !
+  if rx_anz == 8: # 8 byte rx !
       data = ser.read(rx_anz)
       #for i in data:
         #print(i)
@@ -72,10 +73,3 @@ if __name__ == "__main__":
 
   GPIO.cleanup()
   ser.close()
-
-
-
-###################################################################################################################
-
-
-
